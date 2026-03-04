@@ -2,15 +2,38 @@
 import { motion } from "framer-motion";
 import { ShoppingCart, ExternalLink, Share2, Loader2, Check } from "lucide-react";
 import NeonButton from "./NeonButton";
-import { generateMayarLink } from "@/lib/mayarHelper";
 import { useState } from "react";
 
 export default function StorefrontPreview({ data, isPreviewOnly = false }) {
   const [isPublishing, setIsPublishing] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   const [publishUrl, setPublishUrl] = useState("");
+  const [isCheckingOut, setIsCheckingOut] = useState(null);
 
   if (!data) return null;
+
+  const handleCheckout = async (product) => {
+    setIsCheckingOut(product.id);
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(product),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) throw new Error(result.error || "Failed to generate checkout link");
+      if (result.url) {
+        window.open(result.url, "_blank");
+      }
+    } catch (error) {
+      console.error("Checkout Error:", error);
+      alert("Error preparing checkout: " + error.message);
+    } finally {
+      setIsCheckingOut(null);
+    }
+  };
 
   const handlePublish = async () => {
     if (isPreviewOnly) return;
@@ -71,10 +94,12 @@ export default function StorefrontPreview({ data, isPreviewOnly = false }) {
               </div>
               <NeonButton
                 color="cyan"
-                className="w-full !py-5 flex items-center justify-center gap-4 text-xl font-black uppercase tracking-[0.2em] italic"
-                onClick={() => window.open(generateMayarLink(product.slug || product.id, product.price), "_blank")}
+                className={`w-full !py-5 flex items-center justify-center gap-4 text-xl font-black uppercase tracking-[0.2em] italic ${isCheckingOut === product.id ? "opacity-80" : ""}`}
+                onClick={() => handleCheckout(product)}
+                disabled={isCheckingOut === product.id}
               >
-                <ShoppingCart size={24} strokeWidth={3} /> Buy Vibe
+                {isCheckingOut === product.id ? <Loader2 className="animate-spin" size={24} /> : <ShoppingCart size={24} strokeWidth={3} />}
+                {isCheckingOut === product.id ? "Preparing..." : "Buy Vibe"}
               </NeonButton>
             </div>
           </motion.div>
