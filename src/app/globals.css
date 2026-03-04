@@ -1,12 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-neon-cyan: #00e5ff;
+  --color-neon-red: #c0152a;
+}
 
 :root {
   --background: #080408;
   --foreground: #ffffff;
-  --neon-cyan: #00e5ff;
-  --neon-red: #c0152a;
 }
 
 body {
@@ -24,7 +25,7 @@ body {
     box-shadow:
       0 0 10px rgba(0, 229, 255, 0.3),
       inset 0 0 5px rgba(0, 229, 255, 0.2);
-    border-color: var(--neon-cyan);
+    border-color: var(--color-neon-cyan);
   }
 
   .neon-glow-cyan {
