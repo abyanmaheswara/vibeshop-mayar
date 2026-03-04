@@ -1,6 +1,5 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// OpenRouter switch - No SDK needed, using fetch
+const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 // Mock data as fallback
 const MOCK_STOREFRONT = {
@@ -34,14 +33,12 @@ export async function POST(req) {
   try {
     const { prompt } = await req.json();
 
-    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "your_gemini_api_key_here") {
-      console.warn("GEMINI_API_KEY is not configured. Using mock fallback.");
+    if (!process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY === "your_openrouter_api_key_here") {
+      console.warn("OPENROUTER_API_KEY is not configured. Using mock fallback.");
       return new Response(JSON.stringify(MOCK_STOREFRONT), {
         headers: { "Content-Type": "application/json" },
       });
     }
-
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const systemPrompt = `You are VibeShop AI, a high-conversion digital storefront generator. 
       Your goal is to generate a structured JSON object for a storefront based on a user's prompt.
@@ -69,12 +66,31 @@ export async function POST(req) {
       
       Only return the JSON object. No other text.`;
 
-    const result = await model.generateContent([systemPrompt, prompt]);
-    const response = await result.response;
-    const text = response.text();
+    const response = await fetch(OPENROUTER_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "meta-llama/llama-3.1-8b-instruct:free",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`OpenRouter API Error: ${JSON.stringify(errorData)}`);
+    }
+
+    const result = await response.json();
+    const text = result.choices[0].message.content;
 
     try {
-      // Clean up response (sometimes Gemini adds ```json ... ```)
+      // Clean up response (handle potential markdown code blocks)
       const jsonStr = text
         .replace(/```json/g, "")
         .replace(/```/g, "")
@@ -96,7 +112,7 @@ export async function POST(req) {
     });
 
     // Fallback to mock data on ANY error
-    console.warn("Gemini failing. Triggering VibeShop AI Mock Fallback.");
+    console.warn("OpenRouter failing. Triggering VibeShop AI Mock Fallback.");
     return new Response(JSON.stringify(MOCK_STOREFRONT), {
       headers: { "Content-Type": "application/json" },
     });
