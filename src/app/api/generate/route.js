@@ -1,17 +1,13 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export async function POST(req) {
   try {
     const { prompt } = await req.json();
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const response = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20240620",
-      max_tokens: 2000,
-      system: `You are VibeShop AI, a high-conversion digital storefront generator. 
+    const systemPrompt = `You are VibeShop AI, a high-conversion digital storefront generator. 
       Your goal is to generate a structured JSON object for a storefront based on a user's prompt.
       
       The JSON should follow this structure:
@@ -35,12 +31,18 @@ export async function POST(req) {
         ]
       }
       
-      Only return the JSON object. No other text.`,
-      messages: [{ role: "user", content: prompt }],
-    });
+      Only return the JSON object. No other text.`;
 
-    const text = response.content[0].text;
-    const data = JSON.parse(text);
+    const result = await model.generateContent([systemPrompt, prompt]);
+    const response = await result.response;
+    const text = response.text();
+
+    // Clean up response (sometimes Gemini adds ```json ... ```)
+    const jsonStr = text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+    const data = JSON.parse(jsonStr);
 
     return new Response(JSON.stringify(data), {
       headers: { "Content-Type": "application/json" },
