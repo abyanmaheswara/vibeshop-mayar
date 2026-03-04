@@ -3,6 +3,7 @@
 @theme {
   --color-neon-cyan: #00e5ff;
   --color-neon-red: #c0152a;
+  --animate-spin-slow: spin 3s linear infinite;
 }
 
 :root {
