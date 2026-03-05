@@ -34,13 +34,13 @@ export default function StorefrontPreview({ data, views = 0, isPreviewOnly = fal
       bg: "bg-white",
       textPrimary: "text-black",
       textSecondary: "text-neutral-500",
-      h1Font: "font-light tracking-tight",
-      h1Gradient: "linear-gradient(to bottom, #000000, #404040)",
-      cardBg: "bg-neutral-50 border border-neutral-200 hover:border-black shadow-none transition-colors",
-      cardImageGradient: "linear-gradient(to top, #ffffff, #ffffff80, transparent)",
-      productName: "font-medium tracking-tight group-hover:text-black",
-      priceTag: "bg-white text-black font-medium border border-neutral-200 shadow-sm",
-      primaryButton: "minimal", // Assuming NeonButton can handle 'minimal' or fallback to dark
+      h1Font: "font-extrabold tracking-tight text-black",
+      h1Gradient: "none",
+      cardBg: "bg-white border border-neutral-200 hover:border-black shadow-lg transition-colors",
+      cardImageGradient: "linear-gradient(to top, #ffffff, #ffffff00, transparent)",
+      productName: "font-extrabold tracking-tight text-black group-hover:text-black",
+      priceTag: "bg-white text-black font-bold border border-neutral-200 shadow-sm",
+      primaryButton: "black",
     },
     Elegant: {
       bg: "bg-[#0A0D14]",
@@ -48,11 +48,11 @@ export default function StorefrontPreview({ data, views = 0, isPreviewOnly = fal
       textSecondary: "text-[#A99D8F]",
       h1Font: "font-serif tracking-widest uppercase text-[#D4AF37]",
       h1Gradient: "none",
-      cardBg: "bg-[#0A0D14] border border-[#D4AF37]/20 hover:border-[#D4AF37]/60 shadow-[0_10px_30px_rgba(212,175,55,0.05)]",
-      cardImageGradient: "linear-gradient(to top, #0A0D14, #0A0D1480, transparent)",
+      cardBg: "bg-[#0A0D14] border border-[#D4AF37]/20 hover:border-[#D4AF37]/60 shadow-2xl",
+      cardImageGradient: "linear-gradient(to top, #0A0D14, #0A0D1400, transparent)",
       productName: "font-serif tracking-widest text-[#D4AF37] group-hover:text-[#F2E8D5]",
-      priceTag: "bg-[#0A0D14] border border-[#D4AF37]/50 text-[#D4AF37] font-serif uppercase tracking-widest text-xs",
-      primaryButton: "gold", // Assuming NeonButton handles this
+      priceTag: "bg-[#0A0D14] border border-[#D4AF37]/50 text-[#D4AF37] font-serif uppercase tracking-widest text-xs font-bold",
+      primaryButton: "gold",
     },
   };
 
