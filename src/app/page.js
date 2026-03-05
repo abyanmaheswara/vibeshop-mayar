@@ -60,7 +60,13 @@ export default function Home() {
       {/* Preview Section */}
       <AnimatePresence>
         {isGenerated && (
-          <section id="preview" className="min-h-screen py-20 px-6" style={{ background: "linear-gradient(to bottom, transparent, #ffffff05)" }}>
+          <section
+            id="preview"
+            className={`min-h-screen py-20 px-6 transition-colors duration-700 ${theme === "Minimal" ? "bg-white text-black" : theme === "Elegant" ? "bg-[#0A0D14] text-[#F2E8D5]" : "bg-[#080408] text-white"}`}
+            style={{
+              background: theme === "Bold" ? "linear-gradient(to bottom, #080408, #ffffff05)" : undefined,
+            }}
+          >
             <StorefrontPreview data={storeData} customSlug={customSlug} theme={theme} onRegenerate={handleRegenerate} />
           </section>
         )}
