@@ -73,19 +73,17 @@ export default function StorefrontPreview({ data, isPreviewOnly = false, onRegen
       const actionsDiv = storefrontRef.current.querySelector(".storefront-actions");
       if (actionsDiv) actionsDiv.style.opacity = "0";
 
-      const style = document.createElement("style");
-      style.innerHTML = "* { background-image: none !important; }";
-      document.head.appendChild(style);
+      const htmlToImage = await import("html-to-image");
 
-      const domtoimage = (await import("dom-to-image-more")).default;
-
-      const dataUrl = await domtoimage.toPng(storefrontRef.current, {
+      const dataUrl = await htmlToImage.toPng(storefrontRef.current, {
         quality: 1,
-        scale: 2,
-        bgcolor: "#080408",
+        pixelRatio: 2,
+        backgroundColor: "#080408",
+        filter: (node) => {
+          return !node.classList?.contains("download-ignore");
+        },
       });
 
-      document.head.removeChild(style);
       if (actionsDiv) actionsDiv.style.opacity = "1";
 
       const link = document.createElement("a");
