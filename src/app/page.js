@@ -17,8 +17,16 @@ export default function Home() {
     setIsGenerated(true);
     // Scroll to preview
     setTimeout(() => {
-      window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+      document.getElementById("preview")?.scrollIntoView({ behavior: "smooth" });
     }, 100);
+  };
+
+  const handleRegenerate = () => {
+    setIsGenerated(false);
+    setTimeout(() => {
+      setStoreData(null);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 300); // Wait for AnimatePresence exit
   };
 
   return (
@@ -49,7 +57,7 @@ export default function Home() {
       <AnimatePresence>
         {isGenerated && (
           <section id="preview" className="min-h-screen py-20 px-6 bg-gradient-to-b from-transparent to-white/[0.02]">
-            <StorefrontPreview data={storeData} />
+            <StorefrontPreview data={storeData} onRegenerate={handleRegenerate} />
           </section>
         )}
       </AnimatePresence>

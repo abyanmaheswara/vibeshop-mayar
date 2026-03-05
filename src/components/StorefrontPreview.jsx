@@ -1,14 +1,17 @@
 "use client";
 import { motion } from "framer-motion";
-import { ShoppingCart, ExternalLink, Share2, Loader2, Check } from "lucide-react";
+import { ShoppingCart, ExternalLink, Share2, Loader2, Check, RefreshCw, Download } from "lucide-react";
 import NeonButton from "./NeonButton";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import html2canvas from "html2canvas";
 
-export default function StorefrontPreview({ data, isPreviewOnly = false }) {
+export default function StorefrontPreview({ data, isPreviewOnly = false, onRegenerate }) {
   const [isPublishing, setIsPublishing] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   const [publishUrl, setPublishUrl] = useState("");
   const [isCheckingOut, setIsCheckingOut] = useState(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const storefrontRef = useRef(null);
 
   if (!data) return null;
 
@@ -64,16 +67,57 @@ export default function StorefrontPreview({ data, isPreviewOnly = false }) {
     }
   };
 
+  const handleDownloadImage = async () => {
+    if (!storefrontRef.current) return;
+    setIsDownloading(true);
+    try {
+      // Temporarily hide action buttons for a cleaner screenshot
+      const actionsDiv = storefrontRef.current.querySelector(".storefront-actions");
+      if (actionsDiv) actionsDiv.style.opacity = "0";
+
+      const canvas = await html2canvas(storefrontRef.current, {
+        scale: 2, // High resolution
+        useCORS: true, // For external images
+        backgroundColor: "#080408", // Match app background
+      });
+
+      if (actionsDiv) actionsDiv.style.opacity = "1";
+
+      const link = document.createElement("a");
+      link.download = `vibeshop-${data.name.toLowerCase().replace(/\s+/g, "-")}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } catch (error) {
+      console.error("Download Error:", error);
+      alert("Failed to generate image: " + error.message);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
-    <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl mx-auto space-y-12 pb-20">
+    <motion.div ref={storefrontRef} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl mx-auto space-y-12 pb-20 relative p-8 rounded-[3rem]">
       <div className="text-center space-y-4">
         <h1 className="text-5xl md:text-7xl font-extrabold bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent italic tracking-tighter uppercase leading-none">{data.name}</h1>
         <p className="text-white/60 text-lg max-w-xl mx-auto">{data.description}</p>
+
         {!isPreviewOnly && (
-          <div className="flex justify-center gap-4">
-            <NeonButton onClick={handlePublish} color={isPublished ? "magenta" : "cyan"} className="flex items-center gap-3 !px-8 !py-4 rounded-full font-bold uppercase tracking-widest text-lg group overflow-hidden relative">
-              {isPublishing ? <Loader2 className="animate-spin" size={20} /> : isPublished ? <Check size={20} /> : <Share2 size={20} className="group-hover:rotate-12 transition-transform" />}
-              <span>{isPublishing ? "Encrypting Vibe..." : isPublished ? "Link Copied!" : "Publish & Share"}</span>
+          <div className="storefront-actions flex flex-wrap justify-center gap-4 pt-4 transition-opacity duration-300">
+            {onRegenerate && (
+              <NeonButton onClick={onRegenerate} color="magenta" className="flex items-center gap-3 !px-6 !py-3 rounded-full font-bold uppercase tracking-widest text-sm group">
+                <RefreshCw size={18} className="group-hover:-rotate-180 transition-transform duration-500" />
+                <span>Regenerate</span>
+              </NeonButton>
+            )}
+
+            <NeonButton onClick={handlePublish} color={isPublished ? "magenta" : "cyan"} className="flex items-center gap-3 !px-6 !py-3 rounded-full font-bold uppercase tracking-widest text-sm group overflow-hidden relative">
+              {isPublishing ? <Loader2 className="animate-spin" size={18} /> : isPublished ? <Check size={18} /> : <Share2 size={18} className="group-hover:rotate-12 transition-transform" />}
+              <span>{isPublishing ? "Encrypting..." : isPublished ? "Copied!" : "Publish & Share"}</span>
+            </NeonButton>
+
+            <NeonButton onClick={handleDownloadImage} color="cyan" className="flex items-center gap-3 !px-6 !py-3 rounded-full font-bold uppercase tracking-widest text-sm group" disabled={isDownloading}>
+              {isDownloading ? <Loader2 className="animate-spin" size={18} /> : <Download size={18} className="group-hover:-translate-y-1 transition-transform" />}
+              <span>{isDownloading ? "Capturing..." : "Download"}</span>
             </NeonButton>
           </div>
         )}
