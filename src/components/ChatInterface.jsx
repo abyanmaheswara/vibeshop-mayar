@@ -7,7 +7,6 @@ import NeonButton from "./NeonButton";
 export default function ChatInterface({ onGenerate }) {
   const [prompt, setPrompt] = useState("");
   const [customSlug, setCustomSlug] = useState("");
-  const [theme, setTheme] = useState("Bold");
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState("");
@@ -55,7 +54,7 @@ export default function ChatInterface({ onGenerate }) {
     // Simulate generation delay
     setTimeout(() => {
       setIsGenerating(false);
-      onGenerate(prompt, customSlug, theme);
+      onGenerate(prompt, customSlug);
     }, 5500);
   };
 
@@ -92,20 +91,6 @@ export default function ChatInterface({ onGenerate }) {
                   maxLength={30}
                   className="bg-transparent border-none outline-none text-xs font-mono text-[#00E5FF] placeholder:text-[#ffffff30] w-36"
                 />
-              </div>
-
-              {/* Theme Selector */}
-              <div className="flex bg-[#ffffff0a] p-1 rounded-2xl border border-[#ffffff0d]">
-                {["Minimal", "Bold", "Elegant"].map((t) => (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => setTheme(t)}
-                    className={`px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${theme === t ? "bg-white text-black shadow-lg" : "text-white/50 hover:text-white"}`}
-                  >
-                    {t}
-                  </button>
-                ))}
               </div>
             </div>
           </motion.form>
