@@ -135,7 +135,12 @@ export default function StorefrontPreview({ data, isPreviewOnly = false, onRegen
         {data.products.map((product) => (
           <motion.div key={product.id} whileHover={{ y: -10 }} className="glass rounded-[3rem] overflow-hidden group border border-[#ffffff0d] hover:border-[#00e5ff4d] transition-all duration-500 shadow-2xl relative">
             <div className="h-96 overflow-hidden relative">
-              <img src={product.image} alt={product.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100" />
+              <img
+                src={`/api/proxy-image?url=${encodeURIComponent(product.image)}`}
+                alt={product.name}
+                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100"
+                crossOrigin="anonymous"
+              />
               <div className="absolute inset-0 opacity-90 transition-opacity group-hover:opacity-70" style={{ background: "linear-gradient(to top, #080408, #08040833, transparent)" }} />
               <div className="absolute top-6 right-6 glass px-6 py-2 rounded-full border border-[#ffffff1a] font-black text-xl text-[#00E5FF] neon-glow-cyan italic">Rp {product.price.toLocaleString("id-ID")}</div>
             </div>
