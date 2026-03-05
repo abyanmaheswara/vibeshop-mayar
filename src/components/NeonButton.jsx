@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 
 export default function NeonButton({ children, onClick, color = "cyan", className = "" }) {
-  const glowColor = color === "cyan" ? "rgba(0, 229, 255, 0.5)" : "rgba(192, 21, 42, 0.5)";
+  const glowColor = color === "cyan" ? "#00e5ff80" : "#c0152a80";
   const borderColor = color === "cyan" ? "#00E5FF" : "#C0152A";
 
   return (

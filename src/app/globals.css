@@ -34,16 +34,16 @@ body {
 
   .neon-border-cyan {
     box-shadow:
-      0 0 10px rgba(0, 229, 255, 0.3),
-      inset 0 0 5px rgba(0, 229, 255, 0.2);
+      0 0 10px #00e5ff4d,
+      inset 0 0 5px #00e5ff33;
     border-color: var(--color-neon-cyan);
   }
 
   .neon-glow-cyan {
-    text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+    text-shadow: 0 0 10px #00e5ff80;
   }
 
   .neon-glow-red {
-    text-shadow: 0 0 10px rgba(192, 21, 42, 0.5);
+    text-shadow: 0 0 10px #c0152a80;
   }
 }
