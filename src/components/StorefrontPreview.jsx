@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { ShoppingCart, ExternalLink, Share2, Loader2, Check, RefreshCw, Download } from "lucide-react";
 import NeonButton from "./NeonButton";
 import { useState, useRef } from "react";
-import domtoimage from "dom-to-image-more";
 
 export default function StorefrontPreview({ data, isPreviewOnly = false, onRegenerate }) {
   const [isPublishing, setIsPublishing] = useState(false);
@@ -77,6 +76,8 @@ export default function StorefrontPreview({ data, isPreviewOnly = false, onRegen
       const style = document.createElement("style");
       style.innerHTML = "* { background-image: none !important; }";
       document.head.appendChild(style);
+
+      const domtoimage = (await import("dom-to-image-more")).default;
 
       const dataUrl = await domtoimage.toPng(storefrontRef.current, {
         quality: 1,
