@@ -43,6 +43,9 @@ export async function POST(req) {
     const systemPrompt = `You are VibeShop AI, a high-conversion digital storefront generator. 
       Your goal is to generate a structured JSON object for a storefront based on a user's prompt.
       
+      The storefront should have a high-octane, neon, cyberpunk aesthetic (Bold theme).
+      Use vibrant colors like #00E5FF (Cyan) and #C0152A (Magenta) in your suggestions if applicable.
+      
       The JSON should follow this structure:
       {
         "name": "Shop Name",

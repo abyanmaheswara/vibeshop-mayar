@@ -58,20 +58,14 @@ export default function Home() {
       {/* Preview Section */}
       <AnimatePresence>
         {isGenerated && (
-          <section
-            id="preview"
-            className="min-h-screen py-20 px-6"
-            style={{
-              background: "linear-gradient(to bottom, #080408, transparent)",
-            }}
-          >
+          <section id="preview" className="min-h-screen py-20 px-6" style={{ background: "linear-gradient(to bottom, transparent, #ffffff05)" }}>
             <StorefrontPreview data={storeData} customSlug={customSlug} onRegenerate={handleRegenerate} />
           </section>
         )}
       </AnimatePresence>
 
       {/* Footer Vibe */}
-      <footer className="py-10 text-center border-t border-[#ffffff0d] bg-[#080408] text-[#ffffff33] text-sm font-mono tracking-widest uppercase">Built by VibeShop AI — 2026 Competition Ready</footer>
+      <footer className="py-10 text-center border-t border-[#ffffff0d] text-[#ffffff33] text-sm font-mono tracking-widest uppercase">Built by VibeShop AI — 2026 Competition Ready</footer>
     </main>
   );
 }

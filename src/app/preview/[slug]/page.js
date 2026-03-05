@@ -70,13 +70,11 @@ export default function DynamicPreviewPage() {
     );
   }
 
-  const previewTheme = storeData?.data?.theme || "Bold";
-
   return (
-    <main className={`min-h-screen transition-colors duration-700 ${previewTheme === "Minimal" ? "bg-white text-black" : previewTheme === "Elegant" ? "bg-[#0A0D14] text-[#F2E8D5]" : "bg-[#080408] text-white selection:bg-[#00E5FF]/30"}`}>
+    <main className="min-h-screen bg-[#080408] text-white selection:bg-[#00E5FF]/30">
       <GlassNavbar />
       <div className="pt-24 pb-20 px-6">
-        <StorefrontPreview data={storeData?.data} views={storeData?.views} isPreviewOnly={true} theme={previewTheme} />
+        <StorefrontPreview data={storeData?.data} views={storeData?.views} isPreviewOnly={true} />
       </div>
       <footer className="py-10 text-center border-t border-white/5 text-white/20 text-sm font-mono tracking-widest uppercase italic">Powered by VibeShop AI — Future Commerce</footer>
     </main>
