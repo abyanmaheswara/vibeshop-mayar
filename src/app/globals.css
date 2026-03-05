@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@layer base {
+  * {
+    --tw-gradient-from: #080408;
+    --tw-gradient-to: transparent;
+  }
+}
+
 @theme {
   --color-neon-cyan: #00e5ff;
   --color-neon-red: #c0152a;

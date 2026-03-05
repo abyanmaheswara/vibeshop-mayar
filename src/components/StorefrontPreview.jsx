@@ -74,12 +74,17 @@ export default function StorefrontPreview({ data, isPreviewOnly = false, onRegen
       const actionsDiv = storefrontRef.current.querySelector(".storefront-actions");
       if (actionsDiv) actionsDiv.style.opacity = "0";
 
+      const style = document.createElement("style");
+      style.innerHTML = "* { background-image: none !important; }";
+      document.head.appendChild(style);
+
       const dataUrl = await domtoimage.toPng(storefrontRef.current, {
         quality: 1,
         scale: 2,
         bgcolor: "#080408",
       });
 
+      document.head.removeChild(style);
       if (actionsDiv) actionsDiv.style.opacity = "1";
 
       const link = document.createElement("a");
@@ -97,7 +102,12 @@ export default function StorefrontPreview({ data, isPreviewOnly = false, onRegen
   return (
     <motion.div id="storefront-preview" ref={storefrontRef} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl mx-auto space-y-12 pb-20 relative p-8 rounded-[3rem]">
       <div className="text-center space-y-4">
-        <h1 className="text-5xl md:text-7xl font-extrabold bg-gradient-to-b from-[#ffffff] to-[#ffffff80] bg-clip-text text-transparent italic tracking-tighter uppercase leading-none">{data.name}</h1>
+        <h1
+          className="text-5xl md:text-7xl font-extrabold bg-clip-text text-transparent italic tracking-tighter uppercase leading-none"
+          style={{ background: "linear-gradient(to bottom, #ffffff, #ffffff80)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+        >
+          {data.name}
+        </h1>
         <p className="text-[#ffffff99] text-lg max-w-xl mx-auto">{data.description}</p>
 
         {!isPreviewOnly && (
@@ -127,7 +137,7 @@ export default function StorefrontPreview({ data, isPreviewOnly = false, onRegen
           <motion.div key={product.id} whileHover={{ y: -10 }} className="glass rounded-[3rem] overflow-hidden group border border-[#ffffff0d] hover:border-[#00e5ff4d] transition-all duration-500 shadow-2xl relative">
             <div className="h-96 overflow-hidden relative">
               <img src={product.image} alt={product.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#080408] via-[#08040833] to-transparent opacity-90 transition-opacity group-hover:opacity-70" />
+              <div className="absolute inset-0 opacity-90 transition-opacity group-hover:opacity-70" style={{ background: "linear-gradient(to top, #080408, #08040833, transparent)" }} />
               <div className="absolute top-6 right-6 glass px-6 py-2 rounded-full border border-[#ffffff1a] font-black text-xl text-[#00E5FF] neon-glow-cyan italic">Rp {product.price.toLocaleString("id-ID")}</div>
             </div>
             <div className="p-12 space-y-8 relative">
