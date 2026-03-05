@@ -12,7 +12,14 @@ export async function GET(request) {
     const response = await fetch(url);
 
     if (!response.ok) {
-      return new NextResponse("Failed to fetch image", { status: response.status });
+      // Return a 1x1 transparent PNG if the image is missing
+      const fallbackImage = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", "base64");
+      return new NextResponse(fallbackImage, {
+        headers: {
+          "Content-Type": "image/png",
+          "Cache-Control": "public, max-age=31536000, immutable",
+        },
+      });
     }
 
     const arrayBuffer = await response.arrayBuffer();

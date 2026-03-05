@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ShoppingCart, ExternalLink, Share2, Loader2, Check, RefreshCw, Download } from "lucide-react";
 import NeonButton from "./NeonButton";
 import { useState, useRef } from "react";
+import toast from "react-hot-toast";
 
 export default function StorefrontPreview({ data, isPreviewOnly = false, onRegenerate }) {
   const [isPublishing, setIsPublishing] = useState(false);
@@ -31,7 +32,7 @@ export default function StorefrontPreview({ data, isPreviewOnly = false, onRegen
       }
     } catch (error) {
       console.error("Checkout Error:", error);
-      alert("Error preparing checkout: " + error.message);
+      toast.error("Error preparing checkout: " + error.message);
     } finally {
       setIsCheckingOut(null);
     }
@@ -57,10 +58,13 @@ export default function StorefrontPreview({ data, isPreviewOnly = false, onRegen
       setPublishUrl(url);
       navigator.clipboard.writeText(url);
       setIsPublished(true);
-      alert(`VibeShop Published! Link copied to clipboard: ${url}`);
+      toast.success("VibeShop Published! Link copied to clipboard.", {
+        icon: "🚀",
+        style: { border: "1px solid #00e5ff4d" },
+      });
     } catch (error) {
       console.error("Publish Error:", error);
-      alert("Error publishing: " + error.message);
+      toast.error("Error publishing: " + error.message);
     } finally {
       setIsPublishing(false);
     }
@@ -90,9 +94,10 @@ export default function StorefrontPreview({ data, isPreviewOnly = false, onRegen
       link.download = `vibeshop-${data.name.toLowerCase().replace(/\s+/g, "-")}.png`;
       link.href = dataUrl;
       link.click();
+      toast.success("VibeSnap Captured! 📸", { style: { border: "1px solid #00e5ff4d" } });
     } catch (error) {
       console.error("Download Error:", error);
-      alert("Failed to generate image: " + error.message);
+      toast.error("Failed to generate image: " + error.message);
     } finally {
       setIsDownloading(false);
     }
