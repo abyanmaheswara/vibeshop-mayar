@@ -6,6 +6,8 @@ import NeonButton from "./NeonButton";
 
 export default function ChatInterface({ onGenerate }) {
   const [prompt, setPrompt] = useState("");
+  const [customSlug, setCustomSlug] = useState("");
+  const [theme, setTheme] = useState("Bold");
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState("");
@@ -37,13 +39,23 @@ export default function ChatInterface({ onGenerate }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!prompt) return;
+
+    // Validate Custom Slug
+    if (customSlug) {
+      const slugRegex = /^[a-z0-9-]+$/;
+      if (!slugRegex.test(customSlug) || customSlug.length > 30) {
+        toast?.error("Custom URL must be lowercase, alphanumeric, hyphens only, and max 30 chars.");
+        return;
+      }
+    }
+
     setIsGenerating(true);
     setProgress(0);
 
     // Simulate generation delay
     setTimeout(() => {
       setIsGenerating(false);
-      onGenerate(prompt);
+      onGenerate(prompt, customSlug, theme);
     }, 5500);
   };
 
@@ -51,20 +63,51 @@ export default function ChatInterface({ onGenerate }) {
     <div className="w-full max-w-2xl mx-auto">
       <AnimatePresence mode="wait">
         {!isGenerating ? (
-          <motion.form initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} onSubmit={handleSubmit} className="glass p-2 rounded-3xl flex items-center gap-2 shadow-2xl">
-            <div className="pl-4 text-[#00E5FF]">
-              <Sparkles size={20} />
+          <motion.form initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="glass p-2 rounded-3xl flex items-center gap-2 shadow-2xl">
+              <div className="pl-4 text-[#00E5FF]">
+                <Sparkles size={20} />
+              </div>
+              <input
+                type="text"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="Describe your shop (e.g. Toko kaos trendy Gen Z)"
+                className="flex-1 bg-transparent border-none outline-none text-white py-3 placeholder:text-white/30"
+              />
+              <NeonButton type="submit" color="cyan" className="!px-4 !py-2 rounded-2xl">
+                <ArrowRight size={20} />
+              </NeonButton>
             </div>
-            <input
-              type="text"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Describe your shop (e.g. Toko kaos trendy Gen Z)"
-              className="flex-1 bg-transparent border-none outline-none text-white py-3 placeholder:text-white/30"
-            />
-            <NeonButton type="submit" color="cyan" className="!px-4 !py-2 rounded-2xl">
-              <ArrowRight size={20} />
-            </NeonButton>
+
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+              {/* Optional Custom Slug */}
+              <div className="flex items-center gap-3 px-4 py-2 glass rounded-2xl border border-[#ffffff0d] w-fit opacity-70 focus-within:opacity-100 transition-opacity">
+                <span className="text-xs font-mono text-[#ffffff66]">vibeshop.vercel.app/preview/</span>
+                <input
+                  type="text"
+                  value={customSlug}
+                  onChange={(e) => setCustomSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
+                  placeholder="custom-url (optional)"
+                  maxLength={30}
+                  className="bg-transparent border-none outline-none text-xs font-mono text-[#00E5FF] placeholder:text-[#ffffff30] w-36"
+                />
+              </div>
+
+              {/* Theme Selector */}
+              <div className="flex bg-[#ffffff0a] p-1 rounded-2xl border border-[#ffffff0d]">
+                {["Minimal", "Bold", "Elegant"].map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setTheme(t)}
+                    className={`px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${theme === t ? "bg-white text-black shadow-lg" : "text-white/50 hover:text-white"}`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
           </motion.form>
         ) : (
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass p-8 rounded-3xl text-center space-y-6 shadow-[0_0_50px_rgba(0,229,255,0.1)]">

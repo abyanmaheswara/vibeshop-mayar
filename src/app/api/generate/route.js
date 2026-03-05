@@ -31,7 +31,7 @@ const MOCK_STOREFRONT = {
 
 export async function POST(req) {
   try {
-    const { prompt } = await req.json();
+    const { prompt, theme } = await req.json();
 
     if (!process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY === "your_openrouter_api_key_here") {
       console.warn("OPENROUTER_API_KEY is not configured. Using mock fallback.");
@@ -40,8 +40,16 @@ export async function POST(req) {
       });
     }
 
+    const requestedTheme = theme || "Bold";
+
     const systemPrompt = `You are VibeShop AI, a high-conversion digital storefront generator. 
       Your goal is to generate a structured JSON object for a storefront based on a user's prompt.
+      
+      The user requested the "${requestedTheme}" theme aesthetic. 
+      Tailor the shop name, tagline, description, product names, and product descriptions to perfectly match the "${requestedTheme}" vibe.
+      - If "Minimal": clean, simple, essentialist, modern, monochromatic colors.
+      - If "Bold": aggressive, neon, cyberpunk, streetwear, high contrast colors.
+      - If "Elegant": sophisticated, luxury, premium, formal, gold/navy/champagne colors.
       
       The JSON should follow this structure:
       {

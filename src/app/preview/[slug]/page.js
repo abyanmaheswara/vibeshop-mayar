@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import StorefrontPreview from "@/components/StorefrontPreview";
 import GlassNavbar from "@/components/GlassNavbar";
+import { supabase } from "@/lib/supabase";
 
 export default function DynamicPreviewPage() {
   const params = useParams();
@@ -19,8 +20,23 @@ export default function DynamicPreviewPage() {
           return res.json();
         })
         .then((data) => {
-          setStoreData(data.data);
+          const store = data;
+          setStoreData(store);
           setLoading(false);
+
+          // Increment view counter
+          if (store && store.slug) {
+            const currentViews = store.views || 0;
+            supabase
+              .from("storefronts")
+              .update({ views: currentViews + 1 })
+              .eq("slug", slug)
+              .then(() => {
+                // Update local state to reflect the new view count
+                setStoreData((prev) => ({ ...prev, views: currentViews + 1 }));
+              })
+              .catch((e) => console.error("Failed to update view count", e));
+          }
         })
         .catch((err) => {
           setError(err.message);
@@ -58,7 +74,7 @@ export default function DynamicPreviewPage() {
     <main className="min-h-screen bg-[#080408] text-white selection:bg-[#00E5FF]/30">
       <GlassNavbar />
       <div className="pt-24 pb-20 px-6">
-        <StorefrontPreview data={storeData} isPreviewOnly={true} />
+        <StorefrontPreview data={storeData?.data} views={storeData?.views} isPreviewOnly={true} />
       </div>
       <footer className="py-10 text-center border-t border-white/5 text-white/20 text-sm font-mono tracking-widest uppercase italic">Powered by VibeShop AI — Future Commerce</footer>
     </main>

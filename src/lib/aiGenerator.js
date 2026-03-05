@@ -13,12 +13,12 @@ export const parseAIOutput = (text) => {
   }
 };
 
-export const generateStore = async (prompt) => {
+export const generateStore = async (prompt, theme = "Bold") => {
   try {
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({ prompt, theme }),
     });
 
     if (!response.ok) {

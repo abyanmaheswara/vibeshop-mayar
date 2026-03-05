@@ -8,11 +8,15 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
   const [storeData, setStoreData] = useState(null);
+  const [customSlug, setCustomSlug] = useState("");
+  const [theme, setTheme] = useState("Bold");
   const [isGenerated, setIsGenerated] = useState(false);
 
-  const handleGenerate = async (prompt) => {
-    const data = await generateStore(prompt);
+  const handleGenerate = async (prompt, slug, selectedTheme) => {
+    const data = await generateStore(prompt, selectedTheme);
     setStoreData(data);
+    setCustomSlug(slug || "");
+    setTheme(selectedTheme || "Bold");
     localStorage.setItem("lastGeneratedStore", JSON.stringify(data));
     setIsGenerated(true);
     // Scroll to preview
@@ -57,7 +61,7 @@ export default function Home() {
       <AnimatePresence>
         {isGenerated && (
           <section id="preview" className="min-h-screen py-20 px-6" style={{ background: "linear-gradient(to bottom, transparent, #ffffff05)" }}>
-            <StorefrontPreview data={storeData} onRegenerate={handleRegenerate} />
+            <StorefrontPreview data={storeData} customSlug={customSlug} theme={theme} onRegenerate={handleRegenerate} />
           </section>
         )}
       </AnimatePresence>

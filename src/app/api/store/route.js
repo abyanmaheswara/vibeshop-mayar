@@ -25,14 +25,15 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const slug = searchParams.get("slug");
 
-    if (!slug) {
-      return new Response(JSON.stringify({ error: "Slug is required" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+    let query = supabase.from("storefronts").select("*");
+
+    if (slug) {
+      query = query.eq("slug", slug).single();
+    } else {
+      query = query.order("created_at", { ascending: false });
     }
 
-    const { data, error } = await supabase.from("storefronts").select("*").eq("slug", slug).single();
+    const { data, error } = await query;
 
     if (error) throw error;
 
