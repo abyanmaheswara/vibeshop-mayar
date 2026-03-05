@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ShoppingCart, ExternalLink, Share2, Loader2, Check, RefreshCw, Download } from "lucide-react";
 import NeonButton from "./NeonButton";
 import { useState, useRef } from "react";
-import html2canvas from "html2canvas";
+import domtoimage from "dom-to-image-more";
 
 export default function StorefrontPreview({ data, isPreviewOnly = false, onRegenerate }) {
   const [isPublishing, setIsPublishing] = useState(false);
@@ -71,19 +71,20 @@ export default function StorefrontPreview({ data, isPreviewOnly = false, onRegen
     if (!storefrontRef.current) return;
     setIsDownloading(true);
     try {
-      const canvas = await html2canvas(storefrontRef.current, {
+      const actionsDiv = storefrontRef.current.querySelector(".storefront-actions");
+      if (actionsDiv) actionsDiv.style.opacity = "0";
+
+      const dataUrl = await domtoimage.toPng(storefrontRef.current, {
+        quality: 1,
         scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#080408",
-        ignoreElements: (element) => {
-          return element.classList.contains("download-ignore");
-        },
+        bgcolor: "#080408",
       });
+
+      if (actionsDiv) actionsDiv.style.opacity = "1";
 
       const link = document.createElement("a");
       link.download = `vibeshop-${data.name.toLowerCase().replace(/\s+/g, "-")}.png`;
-      link.href = canvas.toDataURL("image/png");
+      link.href = dataUrl;
       link.click();
     } catch (error) {
       console.error("Download Error:", error);
@@ -94,7 +95,7 @@ export default function StorefrontPreview({ data, isPreviewOnly = false, onRegen
   };
 
   return (
-    <motion.div ref={storefrontRef} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl mx-auto space-y-12 pb-20 relative p-8 rounded-[3rem]">
+    <motion.div id="storefront-preview" ref={storefrontRef} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl mx-auto space-y-12 pb-20 relative p-8 rounded-[3rem]">
       <div className="text-center space-y-4">
         <h1 className="text-5xl md:text-7xl font-extrabold bg-gradient-to-b from-[#ffffff] to-[#ffffff80] bg-clip-text text-transparent italic tracking-tighter uppercase leading-none">{data.name}</h1>
         <p className="text-[#ffffff99] text-lg max-w-xl mx-auto">{data.description}</p>
