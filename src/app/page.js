@@ -62,18 +62,29 @@ export default function Home() {
         {isGenerated && (
           <section
             id="preview"
-            className={`min-h-screen py-20 px-6 transition-colors duration-700 ${theme === "Minimal" ? "bg-white text-black" : theme === "Elegant" ? "bg-[#0A0D14] text-[#F2E8D5]" : "bg-[#080408] text-white"}`}
+            className={`min-h-screen py-32 px-6 relative transition-colors duration-700 ${theme === "Minimal" ? "bg-white text-black" : theme === "Elegant" ? "bg-[#0A0D14] text-[#F2E8D5]" : "bg-[#080408] text-white"}`}
             style={{
               background: theme === "Bold" ? "linear-gradient(to bottom, #080408, #ffffff05)" : undefined,
             }}
           >
-            <StorefrontPreview data={storeData} customSlug={customSlug} theme={theme} onRegenerate={handleRegenerate} />
+            {/* Gradient Blend to bridge hero section and preview section */}
+            <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-[#080408] to-transparent pointer-events-none" />
+
+            <div className="relative z-10">
+              <StorefrontPreview data={storeData} customSlug={customSlug} theme={theme} onRegenerate={handleRegenerate} />
+            </div>
           </section>
         )}
       </AnimatePresence>
 
       {/* Footer Vibe */}
-      <footer className="py-10 text-center border-t border-[#ffffff0d] text-[#ffffff33] text-sm font-mono tracking-widest uppercase">Built by VibeShop AI — 2026 Competition Ready</footer>
+      <footer
+        className={`py-10 text-center border-t text-sm font-mono tracking-widest uppercase transition-colors duration-700 ${
+          isGenerated && theme === "Minimal" ? "bg-white text-neutral-400 border-neutral-200" : isGenerated && theme === "Elegant" ? "bg-[#0A0D14] text-[#D4AF37]/50 border-[#D4AF37]/20" : "bg-[#080408] border-[#ffffff0d] text-[#ffffff33]"
+        }`}
+      >
+        Built by VibeShop AI — 2026 Competition Ready
+      </footer>
     </main>
   );
 }
