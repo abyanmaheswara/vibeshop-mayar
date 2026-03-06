@@ -76,7 +76,13 @@ export default function DynamicPreviewPage() {
       <div className="pt-24 pb-20 px-6">
         <StorefrontPreview data={storeData?.data} views={storeData?.views} isPreviewOnly={true} />
       </div>
-      <footer className="py-10 text-center border-t border-white/5 text-white/20 text-sm font-mono tracking-widest uppercase italic">Powered by VibeShop AI — Future Commerce</footer>
+      <footer className="py-12 text-center border-t border-white/5 flex flex-col items-center gap-4">
+        <div className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity">
+          <img src="/logo.png" alt="Abyan Studio" className="w-6 h-6 rounded-md" />
+          <span className="text-xs font-mono tracking-widest uppercase">Built by Abyan Studio</span>
+        </div>
+        <p className="text-white/10 text-[10px] font-mono tracking-[0.3em] uppercase italic">Powered by VibeShop AI — Future Commerce</p>
+      </footer>
     </main>
   );
 }

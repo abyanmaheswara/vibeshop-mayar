@@ -7,6 +7,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "VibeShop AI | The Future of Commerce",
   description: "Generate a high-conversion digital storefront in 60 seconds with AI.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({ children }) {
