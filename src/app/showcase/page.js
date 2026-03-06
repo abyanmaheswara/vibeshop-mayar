@@ -123,7 +123,6 @@ export default function ShowcasePage() {
           </div>
         )}
       </div>
-      </div>
 
       {/* Footer Vibe */}
       <footer className="mt-20 py-12 text-center border-t border-[#ffffff0d] flex flex-col items-center gap-4">
