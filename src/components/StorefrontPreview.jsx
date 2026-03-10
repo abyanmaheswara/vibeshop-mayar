@@ -158,9 +158,17 @@ export default function StorefrontPreview({ data, views = 0, isPreviewOnly = fal
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-        {data.products.map((product) => (
-          <motion.div key={product.id} whileHover={{ y: -10 }} className="glass rounded-[3rem] overflow-hidden group border border-[#ffffff0d] hover:border-[#00e5ff4d] transition-all duration-500 shadow-2xl relative">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12" style={{ perspective: "1000px" }}>
+        {data.products.map((product, index) => (
+          <motion.div 
+            key={product.id} 
+            initial={{ opacity: 0, y: 50, rotateX: -10 }} 
+            animate={{ opacity: 1, y: 0, rotateX: 0 }} 
+            transition={{ delay: index * 0.15, duration: 0.6, type: "spring" }}
+            whileHover={{ y: -10, scale: 1.02, rotateX: 5, rotateY: -5 }} 
+            className="glass rounded-[3rem] overflow-hidden group border border-[#ffffff0d] hover:border-[#00e5ff4d] transition-all duration-500 shadow-2xl relative"
+            style={{ transformStyle: "preserve-3d" }}
+          >
             <div className="h-96 overflow-hidden relative">
               <img
                 src={`/api/proxy-image?url=${encodeURIComponent(product.image)}`}

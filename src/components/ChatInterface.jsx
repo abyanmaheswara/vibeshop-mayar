@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
 import NeonButton from "./NeonButton";
+import toast from "react-hot-toast";
 
 export default function ChatInterface({ onGenerate }) {
   const [prompt, setPrompt] = useState("");
@@ -18,9 +19,8 @@ export default function ChatInterface({ onGenerate }) {
       let currentStep = 0;
       const interval = setInterval(() => {
         setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            return 100;
+          if (prev >= 95) {
+            return 95; // Wait at 95% until real generation finishes
           }
           const next = prev + 1;
           if (next % 20 === 0 && currentStep < loadingSteps.length - 1) {
@@ -51,11 +51,16 @@ export default function ChatInterface({ onGenerate }) {
     setIsGenerating(true);
     setProgress(0);
 
-    // Simulate generation delay
-    setTimeout(() => {
+    try {
+      await onGenerate(prompt, customSlug);
+      setProgress(100);
+      setStatus("VibeShop is ready! 🔥");
+      setTimeout(() => setIsGenerating(false), 800);
+    } catch (error) {
+      console.error(error);
+      toast.error("Generation failed. Please try again.");
       setIsGenerating(false);
-      onGenerate(prompt, customSlug);
-    }, 5500);
+    }
   };
 
   return (
