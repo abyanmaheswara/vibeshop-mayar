@@ -79,14 +79,40 @@ export async function POST(req) {
       
       Only return the JSON object. No other text.`;
 
-    const completion = await openai.chat.completions.create({
-      model: "meta-llama/llama-3.1-8b-instruct:free",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: prompt },
-      ],
-      response_format: { type: "json_object" }
-    });
+    const MODELS_TO_TRY = [
+      "meta-llama/llama-3.2-3b-instruct:free",
+      "mistralai/mistral-7b-instruct:free",
+      "google/gemma-2-9b-it:free",
+    ];
+
+    let completion = null;
+    let usedModel = null;
+    let lastError = null;
+
+    for (const modelId of MODELS_TO_TRY) {
+      try {
+        console.log(`Trying OpenRouter model: ${modelId}`);
+        completion = await openai.chat.completions.create({
+          model: modelId,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: prompt },
+          ],
+          response_format: { type: "json_object" }
+        });
+        
+        usedModel = modelId;
+        console.log(`Successfully generated using ${modelId}`);
+        break; // Stop trying if successful
+      } catch (err) {
+        console.warn(`Failed with model ${modelId}:`, err.message || err);
+        lastError = err;
+      }
+    }
+
+    if (!completion) {
+      throw new Error(`All fallback models failed. Last error: ${lastError?.message || 'Unknown'}`);
+    }
 
     const text = completion.choices[0].message.content;
 
@@ -102,7 +128,7 @@ export async function POST(req) {
         headers: { "Content-Type": "application/json" },
       });
     } catch (parseError) {
-      console.error("AI Response Parsing Failed:", text);
+      console.error(`AI Response Parsing Failed (Model: ${usedModel}):`, text);
       throw parseError;
     }
   } catch (error) {
