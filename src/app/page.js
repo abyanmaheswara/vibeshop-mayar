@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GlassNavbar from "@/components/GlassNavbar";
 import ChatInterface from "@/components/ChatInterface";
 import StorefrontPreview from "@/components/StorefrontPreview";
@@ -10,6 +10,8 @@ export default function Home() {
   const [storeData, setStoreData] = useState(null);
   const [customSlug, setCustomSlug] = useState("");
   const [isGenerated, setIsGenerated] = useState(false);
+
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const handleGenerate = async (prompt, slug) => {
     const data = await generateStore(prompt);
