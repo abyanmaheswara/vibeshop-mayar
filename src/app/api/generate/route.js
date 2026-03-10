@@ -80,9 +80,11 @@ export async function POST(req) {
       Only return the JSON object. No other text.`;
 
     const MODELS_TO_TRY = [
-      "meta-llama/llama-3.2-3b-instruct:free",
-      "mistralai/mistral-7b-instruct:free",
-      "google/gemma-2-9b-it:free",
+      "deepseek/deepseek-r1:free",
+      "deepseek/deepseek-chat:free", 
+      "qwen/qwen2.5-72b-instruct:free",
+      "microsoft/phi-3-mini-128k-instruct:free",
+      "openchat/openchat-7b:free"
     ];
 
     let completion = null;
