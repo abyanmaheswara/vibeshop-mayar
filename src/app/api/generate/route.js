@@ -1,5 +1,6 @@
-// OpenRouter switch - No SDK needed, using fetch
-const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+import OpenAI from "openai";
+
+const OPENROUTER_URL = "https://openrouter.ai/api/v1";
 
 // Mock data as fallback
 const MOCK_STOREFRONT = {
@@ -40,13 +41,22 @@ export async function POST(req) {
       });
     }
 
+    const openai = new OpenAI({
+      baseURL: OPENROUTER_URL,
+      apiKey: process.env.OPENROUTER_API_KEY,
+      defaultHeaders: {
+        "HTTP-Referer": "http://localhost:3000", // Required for OpenRouter
+        "X-Title": "VibeShop AI", // Optional
+      }
+    });
+
     const systemPrompt = `You are VibeShop AI, a high-conversion digital storefront generator. 
       Your goal is to generate a structured JSON object for a storefront based on a user's prompt.
       
       The storefront should have a high-octane, neon, cyberpunk aesthetic (Bold theme).
       Use vibrant colors like #00E5FF (Cyan) and #C0152A (Magenta) in your suggestions if applicable.
       
-      The JSON should follow this structure:
+      The JSON should follow this structure. Do NOT wrap output with \`\`\`json:
       {
         "name": "Shop Name",
         "tagline": "A catchy tagline",
@@ -69,28 +79,16 @@ export async function POST(req) {
       
       Only return the JSON object. No other text.`;
 
-    const response = await fetch(OPENROUTER_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "meta-llama/llama-3.1-8b-instruct:free",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: prompt },
-        ],
-      }),
+    const completion = await openai.chat.completions.create({
+      model: "meta-llama/llama-3.1-8b-instruct:free",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: prompt },
+      ],
+      response_format: { type: "json_object" }
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`OpenRouter API Error: ${JSON.stringify(errorData)}`);
-    }
-
-    const result = await response.json();
-    const text = result.choices[0].message.content;
+    const text = completion.choices[0].message.content;
 
     try {
       // Clean up response (handle potential markdown code blocks)
