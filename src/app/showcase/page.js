@@ -7,16 +7,19 @@ import { Loader2, Store, Users, Eye, Calendar } from "lucide-react";
 export default function ShowcasePage() {
   const [storefronts, setStorefronts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchStorefronts = async () => {
       try {
+        setError(null);
         const response = await fetch("/api/store");
         if (!response.ok) throw new Error("Failed to fetch showcase");
         const data = await response.json();
-        setStorefronts(data);
+        setStorefronts(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error loading showcase:", error);
+        setError(error.message);
       } finally {
         setIsLoading(false);
       }
@@ -27,9 +30,25 @@ export default function ShowcasePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#080408] flexflex-col items-center justify-center p-6 text-white text-center space-y-6">
+      <div className="min-h-screen bg-[#080408] flex flex-col items-center justify-center p-6 text-white text-center space-y-6">
         <Loader2 className="animate-spin w-16 h-16 text-[#00E5FF] mx-auto" strokeWidth={1} />
         <p className="text-[#ffffff66] tracking-widest uppercase text-sm font-bold">Loading The Matrix...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#080408] flex flex-col items-center justify-center p-6 text-white text-center space-y-6">
+        <Store className="w-16 h-16 text-[#C0152A] mx-auto" />
+        <p className="text-[#ffffff99] tracking-widest uppercase text-sm font-bold">Failed to load showcase</p>
+        <p className="text-[#ffffff44] text-xs max-w-md">{error}</p>
+        <button
+          onClick={() => { setIsLoading(true); setError(null); window.location.reload(); }}
+          className="mt-4 px-8 py-3 rounded-full border-2 border-[#00E5FF] text-[#00E5FF] font-bold uppercase tracking-widest text-sm hover:bg-[#00E5FF] hover:text-[#080408] transition-all"
+        >
+          Retry
+        </button>
       </div>
     );
   }
