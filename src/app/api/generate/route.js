@@ -89,10 +89,10 @@ export async function POST(req) {
 
     if (hasGemini) {
       try {
-        console.log("Trying primary model: gemini-2.0-flash-lite");
+        console.log("Trying primary model: gemini-2.5-flash");
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ 
-          model: "gemini-2.0-flash-lite",
+          model: "gemini-2.5-flash",
           systemInstruction: systemPrompt 
         });
 
@@ -104,7 +104,7 @@ export async function POST(req) {
         });
         
         text = result.response.text();
-        usedModel = "gemini-2.0-flash-lite";
+        usedModel = "gemini-2.5-flash";
         console.log("Successfully generated using Google Gemini");
       } catch (geminiError) {
         console.warn("Gemini generation failed, falling back to OpenRouter:", geminiError.message || geminiError);
