@@ -37,9 +37,9 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 relative overflow-hidden">
-        {/* Animated Background Orbs */}
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#00e5ff1a] blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#c0152a1a] blur-[120px] rounded-full animate-pulse delay-700" />
+        {/* Animated Background Orbs - Toned Down for comfort */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#00e5ff0a] blur-[150px] rounded-full" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#c0152a0a] blur-[150px] rounded-full" />
 
         <div className="z-10 text-center space-y-8 max-w-4xl">
           <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-6xl md:text-8xl font-black italic tracking-tighter">

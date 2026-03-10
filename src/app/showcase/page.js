@@ -29,17 +29,17 @@ export default function ShowcasePage() {
     return (
       <div className="min-h-screen bg-[#080408] flexflex-col items-center justify-center p-6 text-white text-center space-y-6">
         <Loader2 className="animate-spin w-16 h-16 text-[#00E5FF] mx-auto" strokeWidth={1} />
-        <p className="text-[#ffffff99] tracking-widest uppercase text-sm font-bold">Loading The Matrix...</p>
+        <p className="text-[#ffffff66] tracking-widest uppercase text-sm font-bold">Loading The Matrix...</p>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-[#080408] text-white pt-32 pb-20 px-6 font-sans selection:bg-[#00e5ff4d] selection:text-white relative overflow-hidden">
-      {/* Background Ambience */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[#00e5ff1a] rounded-full mix-blend-screen filter blur-[150px] opacity-70 animate-pulse-slow"></div>
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-[#c0152a1a] rounded-full mix-blend-screen filter blur-[150px] opacity-70 animate-pulse-slow" style={{ animationDelay: "2s" }}></div>
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none"></div>
+      {/* Background Ambience - Toned down for reading comfort */}
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[#00e5ff05] rounded-full mix-blend-screen filter blur-[200px] opacity-50"></div>
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-[#c0152a05] rounded-full mix-blend-screen filter blur-[200px] opacity-50"></div>
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto relative z-10 space-y-16">
         <div className="text-center space-y-6">

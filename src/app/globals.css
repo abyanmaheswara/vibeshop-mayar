@@ -24,12 +24,27 @@ body {
   font-family: "Inter", sans-serif;
 }
 
+/* Custom Webkit Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #080408;
+}
+::-webkit-scrollbar-thumb {
+  background: #ffffff1a;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff33;
+}
+
 @layer utilities {
   .glass {
-    background-color: #ffffff0d;
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid #ffffff1a;
+    background-color: rgba(255, 255, 255, 0.03); /* Lighter bg for stability */
+    backdrop-filter: blur(40px); /* Stronger blur for solid feel */
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.08); /* Darker border */
   }
 
   .neon-border-cyan {

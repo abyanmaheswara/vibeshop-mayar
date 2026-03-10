@@ -7,8 +7,8 @@ export default function NeonButton({ children, onClick, color = "cyan", classNam
 
   return (
     <motion.button
-      whileHover={{ scale: 1.05, boxShadow: `0 0 20px ${glowColor}` }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{ scale: 1.02, boxShadow: `0 0 15px ${glowColor}` }}
+      whileTap={{ scale: 0.98 }}
       onClick={onClick}
       className={`px-8 py-3 rounded-full font-bold text-white border-2 transition-all duration-300 ${className}`}
       style={{ borderColor: borderColor }}
