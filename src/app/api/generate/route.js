@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from 'groq-sdk';
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1";
 
@@ -36,9 +36,9 @@ export async function POST(req) {
     const { prompt } = await req.json();
 
     const hasOpenRouter = process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_API_KEY !== "your_openrouter_api_key_here";
-    const hasGemini = process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here";
+    const hasGroq = process.env.GROQ_API_KEY && process.env.GROQ_API_KEY !== "your_groq_api_key_here";
 
-    if (!hasOpenRouter && !hasGemini) {
+    if (!hasOpenRouter && !hasGroq) {
       console.warn("No API keys configured. Using mock fallback.");
       return new Response(JSON.stringify(MOCK_STOREFRONT), {
         headers: { "Content-Type": "application/json" },
@@ -87,37 +87,36 @@ export async function POST(req) {
     let usedModel = null;
     let fallbackToOpenRouter = false;
 
-    if (hasGemini) {
+    if (hasGroq) {
       try {
-        console.log("Trying primary model: gemini-2.5-flash");
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ 
-          model: "gemini-2.5-flash",
-          systemInstruction: systemPrompt 
-        });
-
-        const result = await model.generateContent({
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-          generationConfig: {
-            responseMimeType: "application/json",
-          }
+        console.log("Trying primary model: llama-3.1-8b-instant (Groq)");
+        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+        
+        const completion = await groq.chat.completions.create({
+          model: "llama-3.1-8b-instant",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: prompt }
+          ],
+          response_format: { type: "json_object" },
+          max_tokens: 1000
         });
         
-        text = result.response.text();
-        usedModel = "gemini-2.5-flash";
-        console.log("Successfully generated using Google Gemini");
-      } catch (geminiError) {
-        console.warn("Gemini generation failed, falling back to OpenRouter:", geminiError.message || geminiError);
+        text = completion.choices[0].message.content;
+        usedModel = "llama-3.1-8b-instant (Groq)";
+        console.log("Successfully generated using Groq");
+      } catch (groqError) {
+        console.warn("Groq generation failed, falling back to OpenRouter:", groqError.message || groqError);
         fallbackToOpenRouter = true;
       }
     } else {
-      console.warn("GEMINI_API_KEY not configured. Skipping Gemini and using OpenRouter.");
+      console.warn("GROQ_API_KEY not configured. Skipping Groq and using OpenRouter.");
       fallbackToOpenRouter = true;
     }
 
     if (fallbackToOpenRouter) {
       if (!hasOpenRouter) {
-        throw new Error("OpenRouter API key is missing. Both Gemini and OpenRouter failed.");
+        throw new Error("OpenRouter API key is missing. Both Groq and OpenRouter failed.");
       }
 
       const MODELS_TO_TRY = [
