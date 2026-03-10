@@ -121,11 +121,11 @@ export async function POST(req) {
       }
 
       const MODELS_TO_TRY = [
-        "google/gemma-2-9b-it:free",
-        "qwen/qwen-2.5-7b-instruct:free",
-        "meta-llama/llama-3.1-8b-instruct:free",
-        "mistralai/mistral-nemo:free",
-        "deepseek/deepseek-r1:free"
+        "google/gemma-3-27b-it:free",
+        "mistralai/mistral-small-3.1-24b-instruct:free",
+        "meta-llama/llama-3.3-70b-instruct:free",
+        "qwen/qwen3-coder:free",
+        "google/gemma-3-4b-it:free"
       ];
 
       let completion = null;
