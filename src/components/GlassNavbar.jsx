@@ -9,9 +9,9 @@ export default function GlassNavbar() {
           <span className="text-xl font-bold bg-gradient-to-r from-[#00E5FF] to-[#C0152A] bg-clip-text text-transparent italic tracking-tighter">VIBESHOP AI</span>
         </Link>
         <div className="flex items-center gap-2 ml-8 mr-auto text-sm font-bold uppercase tracking-widest text-[#ffffff66]">
-          <Link href="/" className="px-4 py-2 rounded-xl hover:text-[#00E5FF] hover:bg-[#ffffff0a] transition-all duration-300">
+          <a href="/" className="px-4 py-2 rounded-xl hover:text-[#00E5FF] hover:bg-[#ffffff0a] transition-all duration-300">
             Create
-          </Link>
+          </a>
           <Link href="/showcase" className="px-4 py-2 rounded-xl hover:text-[#C0152A] hover:bg-[#ffffff0a] transition-all duration-300">
             Showcase
           </Link>
