@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1";
 
@@ -34,8 +35,11 @@ export async function POST(req) {
   try {
     const { prompt } = await req.json();
 
-    if (!process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY === "your_openrouter_api_key_here") {
-      console.warn("OPENROUTER_API_KEY is not configured. Using mock fallback.");
+    const hasOpenRouter = process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_API_KEY !== "your_openrouter_api_key_here";
+    const hasGemini = process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here";
+
+    if (!hasOpenRouter && !hasGemini) {
+      console.warn("No API keys configured. Using mock fallback.");
       return new Response(JSON.stringify(MOCK_STOREFRONT), {
         headers: { "Content-Type": "application/json" },
       });
@@ -43,10 +47,10 @@ export async function POST(req) {
 
     const openai = new OpenAI({
       baseURL: OPENROUTER_URL,
-      apiKey: process.env.OPENROUTER_API_KEY,
+      apiKey: process.env.OPENROUTER_API_KEY || "dummy",
       defaultHeaders: {
-        "HTTP-Referer": "http://localhost:3000", // Required for OpenRouter
-        "X-Title": "VibeShop AI", // Optional
+        "HTTP-Referer": "http://localhost:3000",
+        "X-Title": "VibeShop AI",
       }
     });
 
@@ -79,44 +83,81 @@ export async function POST(req) {
       
       Only return the JSON object. No other text.`;
 
-    const MODELS_TO_TRY = [
-      "deepseek/deepseek-r1:free",
-      "deepseek/deepseek-chat:free", 
-      "qwen/qwen2.5-72b-instruct:free",
-      "microsoft/phi-3-mini-128k-instruct:free",
-      "openchat/openchat-7b:free"
-    ];
-
-    let completion = null;
+    let text = null;
     let usedModel = null;
-    let lastError = null;
+    let fallbackToOpenRouter = false;
 
-    for (const modelId of MODELS_TO_TRY) {
+    if (hasGemini) {
       try {
-        console.log(`Trying OpenRouter model: ${modelId}`);
-        completion = await openai.chat.completions.create({
-          model: modelId,
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: prompt },
-          ],
-          response_format: { type: "json_object" }
+        console.log("Trying primary model: gemini-1.5-flash");
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ 
+          model: "gemini-1.5-flash",
+          systemInstruction: systemPrompt 
+        });
+
+        const result = await model.generateContent({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: {
+            responseMimeType: "application/json",
+          }
         });
         
-        usedModel = modelId;
-        console.log(`Successfully generated using ${modelId}`);
-        break; // Stop trying if successful
-      } catch (err) {
-        console.warn(`Failed with model ${modelId}:`, err.message || err);
-        lastError = err;
+        text = result.response.text();
+        usedModel = "gemini-1.5-flash";
+        console.log("Successfully generated using Google Gemini");
+      } catch (geminiError) {
+        console.warn("Gemini generation failed, falling back to OpenRouter:", geminiError.message || geminiError);
+        fallbackToOpenRouter = true;
       }
+    } else {
+      console.warn("GEMINI_API_KEY not configured. Skipping Gemini and using OpenRouter.");
+      fallbackToOpenRouter = true;
     }
 
-    if (!completion) {
-      throw new Error(`All fallback models failed. Last error: ${lastError?.message || 'Unknown'}`);
-    }
+    if (fallbackToOpenRouter) {
+      if (!hasOpenRouter) {
+        throw new Error("OpenRouter API key is missing. Both Gemini and OpenRouter failed.");
+      }
 
-    const text = completion.choices[0].message.content;
+      const MODELS_TO_TRY = [
+        "deepseek/deepseek-r1:free",
+        "deepseek/deepseek-chat:free", 
+        "qwen/qwen2.5-72b-instruct:free",
+        "microsoft/phi-3-mini-128k-instruct:free",
+        "openchat/openchat-7b:free"
+      ];
+
+      let completion = null;
+      let lastError = null;
+
+      for (const modelId of MODELS_TO_TRY) {
+        try {
+          console.log(`Trying OpenRouter model: ${modelId}`);
+          completion = await openai.chat.completions.create({
+            model: modelId,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: prompt },
+            ],
+            response_format: { type: "json_object" }
+          });
+          
+          usedModel = modelId;
+          console.log(`Successfully generated using ${modelId}`);
+          break; // Stop trying if successful
+        } catch (err) {
+          console.warn(`Failed with model ${modelId}:`, err.message || err);
+          lastError = err;
+        }
+      }
+
+      if (!completion) {
+        throw new Error(`All fallback OpenRouter models failed. Last error: ${lastError?.message || 'Unknown'}`);
+      }
+
+      text = completion.choices[0].message.content;
+    }
 
     try {
       // Clean up response (handle potential markdown code blocks)
