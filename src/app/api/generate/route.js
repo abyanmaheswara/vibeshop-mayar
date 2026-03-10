@@ -104,7 +104,7 @@ export async function POST(req) {
         });
         
         text = result.response.text();
-        usedModel = "gemini-2.0-flash";
+        usedModel = "gemini-1.5-flash-8b";
         console.log("Successfully generated using Google Gemini");
       } catch (geminiError) {
         console.warn("Gemini generation failed, falling back to OpenRouter:", geminiError.message || geminiError);
