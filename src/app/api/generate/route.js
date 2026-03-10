@@ -89,10 +89,10 @@ export async function POST(req) {
 
     if (hasGemini) {
       try {
-        console.log("Trying primary model: gemini-2.5-flash-preview-04-17");
+        console.log("Trying primary model: gemini-1.5-flash-8b");
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ 
-          model: "gemini-2.5-flash-preview-04-17",
+          model: "gemini-1.5-flash-8b",
           systemInstruction: systemPrompt 
         });
 
@@ -149,6 +149,8 @@ export async function POST(req) {
         } catch (err) {
           console.warn(`Failed with model ${modelId}:`, err.message || err);
           lastError = err;
+          console.log("Waiting 2 seconds before trying the next OpenRouter model...");
+          await new Promise(resolve => setTimeout(resolve, 2000));
         }
       }
 
