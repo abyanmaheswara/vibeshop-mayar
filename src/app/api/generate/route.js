@@ -89,10 +89,10 @@ export async function POST(req) {
 
     if (hasGemini) {
       try {
-        console.log("Trying primary model: gemini-1.5-flash");
+        console.log("Trying primary model: gemini-1.5-flash-latest");
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ 
-          model: "gemini-1.5-flash",
+          model: "gemini-1.5-flash-latest",
           systemInstruction: systemPrompt 
         });
 
@@ -104,7 +104,7 @@ export async function POST(req) {
         });
         
         text = result.response.text();
-        usedModel = "gemini-1.5-flash";
+        usedModel = "gemini-1.5-flash-latest";
         console.log("Successfully generated using Google Gemini");
       } catch (geminiError) {
         console.warn("Gemini generation failed, falling back to OpenRouter:", geminiError.message || geminiError);
@@ -121,11 +121,11 @@ export async function POST(req) {
       }
 
       const MODELS_TO_TRY = [
-        "deepseek/deepseek-r1:free",
-        "deepseek/deepseek-chat:free", 
-        "qwen/qwen2.5-72b-instruct:free",
-        "microsoft/phi-3-mini-128k-instruct:free",
-        "openchat/openchat-7b:free"
+        "meta-llama/llama-3.1-8b-instruct",
+        "mistralai/mistral-nemo",
+        "qwen/qwen-2.5-7b-instruct",
+        "google/gemma-2-9b-it",
+        "nousresearch/hermes-3-llama-3.1-8b"
       ];
 
       let completion = null;
