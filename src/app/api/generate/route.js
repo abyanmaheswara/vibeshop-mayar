@@ -29,6 +29,26 @@ const MOCK_STOREFRONT = {
       image: "https://images.unsplash.com/photo-1572635196237-14b3f281303f?q=80&w=1000&auto=format&fit=crop",
     },
   ],
+  reviews: [
+    {
+      id: "rev-1",
+      author: "CyberRonin99",
+      rating: 5,
+      text: "Gilaakk bajunya nyala beneran pas dipake ngonser, min! 🔥 Sangat cyberpunk!",
+    },
+    {
+      id: "rev-2",
+      author: "NeonDreamer",
+      rating: 5,
+      text: "Vibe-nya dapet banget. Pengiriman secepat cahaya fiber optic. ⚡",
+    },
+    {
+      id: "rev-3",
+      author: "AestheticLord",
+      rating: 4,
+      text: "Barang bagus, packaging rapi. Bakal langganan terus kalau ada drop baru.",
+    }
+  ],
 };
 
 export async function POST(req) {
@@ -78,9 +98,18 @@ export async function POST(req) {
             "description": "Product description",
             "image": "https://images.unsplash.com/photo-..."
           }
+        ],
+        "reviews": [
+          {
+            "id": "rev-1",
+            "author": "Username",
+            "rating": 5,
+            "text": "A fake, funny, and thematic review that matches the vibe of the store."
+          }
         ]
       }
       
+      Generate 3-5 reviews.
       Only return the JSON object. No other text.`;
 
     let text = null;
@@ -99,7 +128,7 @@ export async function POST(req) {
             { role: "user", content: prompt }
           ],
           response_format: { type: "json_object" },
-          max_tokens: 1000
+          max_tokens: 1500
         });
         
         text = completion.choices[0].message.content;

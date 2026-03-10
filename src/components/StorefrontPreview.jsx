@@ -1,8 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
-import { ShoppingCart, ExternalLink, Share2, Loader2, Check, RefreshCw, Download } from "lucide-react";
+import { ShoppingCart, ExternalLink, Share2, Loader2, Check, RefreshCw, Download, Star, X, ShoppingBag } from "lucide-react";
 import NeonButton from "./NeonButton";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Eye } from "lucide-react";
 
@@ -10,34 +10,59 @@ export default function StorefrontPreview({ data, views = 0, isPreviewOnly = fal
   const [isPublishing, setIsPublishing] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   const [publishUrl, setPublishUrl] = useState("");
-  const [isCheckingOut, setIsCheckingOut] = useState(null);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const storefrontRef = useRef(null);
 
   if (!data) return null;
 
   if (!data) return null;
 
-  const handleCheckout = async (product) => {
-    setIsCheckingOut(product.id);
+  const handleAddToCart = (product) => {
+    setCartItems((prev) => [...prev, product]);
+    setIsCartOpen(true);
+    toast.success("Added to cart!", { style: { background: "#080408", color: "#00E5FF", border: "1px solid #00e5ff4d" } });
+  };
+
+  const handleRemoveFromCart = (indexToRemove) => {
+    setCartItems((prev) => prev.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return;
+    setIsCheckingOut(true);
+    
+    // Calculate total
+    const totalAmount = cartItems.reduce((sum, item) => sum + item.price, 0);
+    const itemNames = cartItems.map(item => item.name).join(", ");
+    
     try {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(product),
+        // Send a combined product representation for the cart
+        body: JSON.stringify({
+          name: "VibeShop Order",
+          price: totalAmount,
+          description: `Order containing: ${itemNames}`
+        }),
       });
 
       const result = await response.json();
 
       if (!response.ok) throw new Error(result.error || "Failed to generate checkout link");
       if (result.url) {
+        setCartItems([]);
+        setIsCartOpen(false);
         window.open(result.url, "_blank");
       }
     } catch (error) {
       console.error("Checkout Error:", error);
       toast.error("Error preparing checkout: " + error.message);
     } finally {
-      setIsCheckingOut(null);
+      setIsCheckingOut(false);
     }
   };
 
@@ -186,17 +211,137 @@ export default function StorefrontPreview({ data, views = 0, isPreviewOnly = fal
               </div>
               <NeonButton
                 color="cyan"
-                className={`w-full !py-5 flex items-center justify-center gap-4 text-xl font-black uppercase tracking-[0.2em] italic ${isCheckingOut === product.id ? "opacity-80" : ""}`}
-                onClick={() => handleCheckout(product)}
-                disabled={isCheckingOut === product.id}
+                className="w-full !py-5 flex items-center justify-center gap-4 text-xl font-black uppercase tracking-[0.2em] italic"
+                onClick={() => handleAddToCart(product)}
               >
-                {isCheckingOut === product.id ? <Loader2 className="animate-spin" size={24} /> : <ShoppingCart size={24} strokeWidth={3} />}
-                {isCheckingOut === product.id ? "Preparing..." : "Buy Vibe"}
+                <ShoppingCart size={24} strokeWidth={3} />
+                Add to Cart
               </NeonButton>
             </div>
           </motion.div>
         ))}
       </div>
+      <div className="flex justify-end pt-8">
+        <button
+          onClick={() => setIsCartOpen(true)}
+          className="glass download-ignore flex items-center justify-center gap-3 px-8 py-4 rounded-full font-black text-white hover:text-[#00E5FF] transition-all border border-[#ffffff1a] hover:border-[#00e5ff4d] shadow-xl relative"
+        >
+          <ShoppingCart size={24} />
+          <span className="tracking-widest uppercase">View Cart</span>
+          {cartItems.length > 0 && (
+            <span className="absolute -top-2 -right-2 bg-[#C0152A] text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
+              {cartItems.length}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* Reviews Section */}
+      {data.reviews && data.reviews.length > 0 && (
+        <div className="pt-20 space-y-12">
+          <div className="text-center space-y-4">
+            <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase line-clamp-1">Wall of <span className="text-[#00E5FF] neon-glow-cyan">Vibes</span></h2>
+            <p className="text-[#ffffff66] font-medium tracking-wide">What people say about this shop</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {data.reviews.map((review, i) => (
+              <motion.div
+                key={review.id || i}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.2 + 0.5, duration: 0.6 }}
+                className="glass p-8 rounded-[2.5rem] space-y-4 border border-[#ffffff0d] hover:border-[#ffffff26] transition-colors relative shadow-lg"
+              >
+                <div className="flex items-center gap-1 text-[#00E5FF]">
+                  {[...Array(5)].map((_, index) => (
+                    <Star key={index} size={16} fill={index < review.rating ? "currentColor" : "transparent"} opacity={index < review.rating ? 1 : 0.3} />
+                  ))}
+                </div>
+                <p className="text-white/80 font-medium italic leading-relaxed">"{review.text}"</p>
+                <div className="pt-4 border-t border-[#ffffff1a] flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00E5FF] to-[#C0152A] flex items-center justify-center text-xs font-bold text-white shadow-inner">
+                    {review.author.charAt(0).toUpperCase()}
+                  </div>
+                  <p className="text-[#ffffff99] text-sm font-bold tracking-wider">{review.author}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Sliding Cart Drawer */}
+      {isCartOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 download-ignore"
+            onClick={() => setIsCartOpen(false)}
+          />
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed top-0 right-0 h-full w-full max-w-md bg-[#080408] border-l border-[#ffffff1a] z-50 flex flex-col shadow-2xl download-ignore"
+          >
+            <div className="p-6 border-b border-[#ffffff1a] flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <ShoppingBag className="text-[#00E5FF]" size={24} />
+                <h2 className="text-2xl font-black italic tracking-widest uppercase text-white">Your Cart</h2>
+              </div>
+              <button
+                onClick={() => setIsCartOpen(false)}
+                className="w-10 h-10 rounded-full glass flex items-center justify-center text-white hover:text-[#C0152A] transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              {cartItems.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center opacity-50 space-y-4">
+                  <ShoppingCart size={48} />
+                  <p className="text-lg font-bold uppercase tracking-widest">Cart is empty</p>
+                </div>
+              ) : (
+                cartItems.map((item, index) => (
+                  <div key={index} className="glass p-4 rounded-2xl flex items-center gap-4">
+                    <img src={`/api/proxy-image?url=${encodeURIComponent(item.image)}`} className="w-16 h-16 rounded-xl object-cover" alt={item.name} />
+                    <div className="flex-1">
+                      <h4 className="font-bold text-sm text-white line-clamp-1">{item.name}</h4>
+                      <p className="text-[#00E5FF] text-xs font-bold">Rp {item.price.toLocaleString("id-ID")}</p>
+                    </div>
+                    <button
+                      onClick={() => handleRemoveFromCart(index)}
+                      className="p-2 text-white/50 hover:text-[#C0152A] transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="p-6 border-t border-[#ffffff1a] bg-[#00000033]">
+              <div className="flex items-center justify-between mb-6">
+                <span className="text-white/60 font-medium uppercase tracking-widest text-sm">Total</span>
+                <span className="text-2xl font-black italic text-[#00E5FF]">
+                  Rp {cartItems.reduce((sum, item) => sum + item.price, 0).toLocaleString("id-ID")}
+                </span>
+              </div>
+              <NeonButton
+                color="magenta"
+                className="w-full !py-4 flex items-center justify-center gap-3 text-lg"
+                onClick={handleCheckout}
+                disabled={cartItems.length === 0 || isCheckingOut}
+              >
+                {isCheckingOut ? <Loader2 className="animate-spin" size={20} /> : <Check size={20} />}
+                {isCheckingOut ? "Processing..." : "Checkout Now"}
+              </NeonButton>
+            </div>
+          </motion.div>
+        </>
+      )}
     </motion.div>
   );
 }

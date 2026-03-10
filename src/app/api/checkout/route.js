@@ -12,7 +12,7 @@ export async function POST(req) {
       amount: parseInt(product.price) || 0,
       email: "guest@vibeshop.local", // Required field
       mobile: "080000000000", // Required field
-      description: `Payment for ${product.name} from VibeShop AI`, // Required field
+      description: product.description || `Payment for ${product.name} from VibeShop AI`, // Support cart descriptions
     };
 
     const response = await fetch("https://api.mayar.id/hl/v1/payment/create", {
