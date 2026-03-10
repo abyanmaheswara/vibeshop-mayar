@@ -208,7 +208,7 @@ export default function StorefrontPreview({ data, views = 0, isPreviewOnly = fal
           >
             <div className="h-96 overflow-hidden relative">
               <img
-                src={`https://source.unsplash.com/400x300/?${encodeURIComponent(product.name)}`}
+                src={`https://picsum.photos/seed/${encodeURIComponent(product.name)}/400/300`}
                 alt={product.name}
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100"
                 onError={(e) => {
