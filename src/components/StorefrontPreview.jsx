@@ -146,10 +146,10 @@ export default function StorefrontPreview({ data, views = 0, isPreviewOnly = fal
   };
 
   return (
-    <motion.div id="storefront-preview" ref={storefrontRef} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl mx-auto space-y-12 pb-20 relative p-8 rounded-[3rem]">
-      <div className="text-center space-y-4">
+    <motion.div id="storefront-preview" ref={storefrontRef} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl mx-auto space-y-8 sm:space-y-12 pb-10 sm:pb-20 relative p-3 sm:p-8 rounded-2xl sm:rounded-[3rem]">
+      <div className="text-center space-y-3 sm:space-y-4">
         <h1
-          className="text-5xl md:text-7xl font-extrabold bg-clip-text text-transparent italic tracking-tighter uppercase leading-none"
+          className="text-3xl sm:text-5xl md:text-7xl font-extrabold bg-clip-text text-transparent italic tracking-tighter uppercase leading-none"
           style={{ background: "linear-gradient(to bottom, #ffffff, #ffffff80)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
         >
           {data.name}
@@ -160,42 +160,42 @@ export default function StorefrontPreview({ data, views = 0, isPreviewOnly = fal
               <Eye size={16} />
               {views.toLocaleString()} views
             </div>
-            <button onClick={() => window.location.href = '/'} className="inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 border-[#00E5FF] text-[#00E5FF] font-bold uppercase tracking-widest text-sm hover:bg-[#00E5FF] hover:text-[#080408] transition-all download-ignore cursor-pointer">
-              <ArrowLeft size={16} />
+            <button onClick={() => window.location.href = '/'} className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full border-2 border-[#00E5FF] text-[#00E5FF] font-bold uppercase tracking-widest text-xs sm:text-sm hover:bg-[#00E5FF] hover:text-[#080408] transition-all download-ignore cursor-pointer">
+              <ArrowLeft size={14} className="sm:w-4 sm:h-4" />
               Create Your Own
             </button>
           </div>
         )}
-        <p className="text-[#ffffff99] text-lg max-w-xl mx-auto">{data.description}</p>
+        <p className="text-[#ffffff99] text-sm sm:text-lg max-w-xl mx-auto px-2">{data.description}</p>
 
         {!isPreviewOnly && (
-          <div className="storefront-actions download-ignore flex flex-wrap justify-center gap-4 pt-4 transition-opacity duration-300">
+          <div className="storefront-actions download-ignore flex flex-col sm:flex-row flex-wrap justify-center gap-2.5 sm:gap-4 pt-4 transition-opacity duration-300 px-1">
             {onRegenerate && (
-              <NeonButton onClick={onRegenerate} color="magenta" className="flex items-center gap-3 !px-6 !py-3 rounded-full font-bold uppercase tracking-widest text-sm group">
-                <RefreshCw size={18} className="group-hover:-rotate-180 transition-transform duration-500" />
+              <NeonButton onClick={onRegenerate} color="magenta" className="flex items-center justify-center gap-2 sm:gap-3 !px-4 sm:!px-6 !py-2.5 sm:!py-3 rounded-full font-bold uppercase tracking-wider sm:tracking-widest text-xs sm:text-sm group w-full sm:w-auto">
+                <RefreshCw size={16} className="sm:w-[18px] sm:h-[18px] group-hover:-rotate-180 transition-transform duration-500" />
                 <span>Regenerate</span>
               </NeonButton>
             )}
 
-            <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-sm border-2 border-[#ffffff33] text-[#ffffff99] hover:border-[#00E5FF] hover:text-[#00E5FF] transition-all download-ignore cursor-pointer">
-              <ArrowLeft size={18} />
+            <button onClick={() => window.location.href = '/'} className="flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold uppercase tracking-wider sm:tracking-widest text-xs sm:text-sm border-2 border-[#ffffff33] text-[#ffffff99] hover:border-[#00E5FF] hover:text-[#00E5FF] transition-all download-ignore cursor-pointer w-full sm:w-auto">
+              <ArrowLeft size={16} className="sm:w-[18px] sm:h-[18px]" />
               <span>Create New</span>
             </button>
 
-            <NeonButton onClick={handlePublish} color={isPublished ? "magenta" : "cyan"} className="flex items-center gap-3 !px-6 !py-3 rounded-full font-bold uppercase tracking-widest text-sm group overflow-hidden relative">
-              {isPublishing ? <Loader2 className="animate-spin" size={18} /> : isPublished ? <Check size={18} /> : <Share2 size={18} className="group-hover:rotate-12 transition-transform" />}
+            <NeonButton onClick={handlePublish} color={isPublished ? "magenta" : "cyan"} className="flex items-center justify-center gap-2 sm:gap-3 !px-4 sm:!px-6 !py-2.5 sm:!py-3 rounded-full font-bold uppercase tracking-wider sm:tracking-widest text-xs sm:text-sm group overflow-hidden relative w-full sm:w-auto">
+              {isPublishing ? <Loader2 className="animate-spin" size={16} /> : isPublished ? <Check size={16} /> : <Share2 size={16} className="group-hover:rotate-12 transition-transform" />}
               <span>{isPublishing ? "Encrypting..." : isPublished ? "Copied!" : "Publish & Share"}</span>
             </NeonButton>
 
-            <NeonButton onClick={handleDownloadImage} color="cyan" className="flex items-center gap-3 !px-6 !py-3 rounded-full font-bold uppercase tracking-widest text-sm group" disabled={isDownloading}>
-              {isDownloading ? <Loader2 className="animate-spin" size={18} /> : <Download size={18} className="group-hover:-translate-y-1 transition-transform" />}
+            <NeonButton onClick={handleDownloadImage} color="cyan" className="flex items-center justify-center gap-2 sm:gap-3 !px-4 sm:!px-6 !py-2.5 sm:!py-3 rounded-full font-bold uppercase tracking-wider sm:tracking-widest text-xs sm:text-sm group w-full sm:w-auto" disabled={isDownloading}>
+              {isDownloading ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} className="group-hover:-translate-y-1 transition-transform" />}
               <span>{isDownloading ? "Capturing..." : "Download"}</span>
             </NeonButton>
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12" style={{ perspective: "1000px" }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12" style={{ perspective: "1000px" }}>
         {data.products.map((product, index) => (
           <motion.div 
             key={product.id} 
@@ -203,10 +203,10 @@ export default function StorefrontPreview({ data, views = 0, isPreviewOnly = fal
             animate={{ opacity: 1, y: 0, rotateX: 0 }} 
             transition={{ delay: index * 0.15, duration: 0.6, type: "spring" }}
             whileHover={{ y: -10, scale: 1.02, rotateX: 5, rotateY: -5 }} 
-            className="glass rounded-[3rem] overflow-hidden group border border-[#ffffff0d] hover:border-[#00e5ff4d] transition-all duration-500 shadow-2xl relative"
+            className="glass rounded-2xl sm:rounded-[3rem] overflow-hidden group border border-[#ffffff0d] hover:border-[#00e5ff4d] transition-all duration-500 shadow-2xl relative"
             style={{ transformStyle: "preserve-3d" }}
           >
-            <div className="h-96 overflow-hidden relative">
+            <div className="h-52 sm:h-72 md:h-96 overflow-hidden relative">
               <img
                 src={`https://picsum.photos/seed/${encodeURIComponent(product.name)}/400/300`}
                 alt={product.name}
@@ -220,34 +220,34 @@ export default function StorefrontPreview({ data, views = 0, isPreviewOnly = fal
                 {product.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
               </div>
               <div className="absolute inset-0 opacity-90 transition-opacity group-hover:opacity-70" style={{ background: "linear-gradient(to top, #080408, #08040833, transparent)" }} />
-              <div className="absolute top-6 right-6 glass px-6 py-2 rounded-full border border-[#ffffff1a] font-black text-xl text-[#00E5FF] neon-glow-cyan italic">Rp {product.price.toLocaleString("id-ID")}</div>
+              <div className="absolute top-3 right-3 sm:top-6 sm:right-6 glass px-3 py-1 sm:px-6 sm:py-2 rounded-full border border-[#ffffff1a] font-black text-sm sm:text-xl text-[#00E5FF] neon-glow-cyan italic">Rp {product.price.toLocaleString("id-ID")}</div>
             </div>
-            <div className="p-12 space-y-8 relative">
-              <div className="space-y-2">
-                <h3 className="text-4xl font-black text-white italic tracking-tighter uppercase leading-tight group-hover:text-[#00E5FF] transition-colors duration-500">{product.name}</h3>
-                <p className="text-[#ffffff66] text-base font-medium leading-relaxed max-w-sm line-clamp-2">{product.description || "Premium high-quality items designed with vibe in mind and soul in core."}</p>
+            <div className="p-5 sm:p-8 md:p-12 space-y-4 sm:space-y-8 relative">
+              <div className="space-y-1.5 sm:space-y-2">
+                <h3 className="text-xl sm:text-3xl md:text-4xl font-black text-white italic tracking-tighter uppercase leading-tight group-hover:text-[#00E5FF] transition-colors duration-500">{product.name}</h3>
+                <p className="text-[#ffffff66] text-sm sm:text-base font-medium leading-relaxed max-w-sm line-clamp-2">{product.description || "Premium high-quality items designed with vibe in mind and soul in core."}</p>
               </div>
               <NeonButton
                 color="cyan"
-                className="w-full !py-5 flex items-center justify-center gap-4 text-xl font-black uppercase tracking-[0.2em] italic"
+                className="w-full !py-3 sm:!py-5 flex items-center justify-center gap-2 sm:gap-4 text-sm sm:text-xl font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] italic"
                 onClick={() => handleAddToCart(product)}
               >
-                <ShoppingCart size={24} strokeWidth={3} />
+                <ShoppingCart size={18} className="sm:w-6 sm:h-6" strokeWidth={3} />
                 Add to Cart
               </NeonButton>
             </div>
           </motion.div>
         ))}
       </div>
-      <div className="flex justify-end pt-8">
+      <div className="flex justify-end pt-4 sm:pt-8">
         <button
           onClick={() => setIsCartOpen(true)}
-          className="glass download-ignore flex items-center justify-center gap-3 px-8 py-4 rounded-full font-black text-white hover:text-[#00E5FF] transition-all border border-[#ffffff1a] hover:border-[#00e5ff4d] shadow-xl relative"
+          className="glass download-ignore flex items-center justify-center gap-2 sm:gap-3 px-5 sm:px-8 py-3 sm:py-4 rounded-full font-black text-white hover:text-[#00E5FF] transition-all border border-[#ffffff1a] hover:border-[#00e5ff4d] shadow-xl relative text-sm sm:text-base"
         >
-          <ShoppingCart size={24} />
-          <span className="tracking-widest uppercase">View Cart</span>
+          <ShoppingCart size={20} className="sm:w-6 sm:h-6" />
+          <span className="tracking-wider sm:tracking-widest uppercase">View Cart</span>
           {cartItems.length > 0 && (
-            <span className="absolute -top-2 -right-2 bg-[#C0152A] text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
+            <span className="absolute -top-2 -right-2 bg-[#C0152A] text-white text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full">
               {cartItems.length}
             </span>
           )}
@@ -256,26 +256,26 @@ export default function StorefrontPreview({ data, views = 0, isPreviewOnly = fal
 
       {/* Reviews Section */}
       {data.reviews && data.reviews.length > 0 && (
-        <div className="pt-20 space-y-12">
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase line-clamp-1">Wall of <span className="text-[#00E5FF] neon-glow-cyan">Vibes</span></h2>
-            <p className="text-[#ffffff66] font-medium tracking-wide">What people say about this shop</p>
+        <div className="pt-10 sm:pt-20 space-y-8 sm:space-y-12">
+          <div className="text-center space-y-3 sm:space-y-4">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black italic tracking-tighter uppercase line-clamp-1">Wall of <span className="text-[#00E5FF] neon-glow-cyan">Vibes</span></h2>
+            <p className="text-[#ffffff66] text-sm sm:text-base font-medium tracking-wide">What people say about this shop</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {data.reviews.map((review, i) => (
               <motion.div
                 key={review.id || i}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.2 + 0.5, duration: 0.6 }}
-                className="glass p-8 rounded-[2.5rem] space-y-4 border border-[#ffffff0d] hover:border-[#ffffff26] transition-colors relative shadow-lg"
+                className="glass p-5 sm:p-8 rounded-2xl sm:rounded-[2.5rem] space-y-3 sm:space-y-4 border border-[#ffffff0d] hover:border-[#ffffff26] transition-colors relative shadow-lg"
               >
                 <div className="flex items-center gap-1 text-[#00E5FF]">
                   {[...Array(5)].map((_, index) => (
                     <Star key={index} size={16} fill={index < review.rating ? "currentColor" : "transparent"} opacity={index < review.rating ? 1 : 0.3} />
                   ))}
                 </div>
-                <p className="text-white/80 font-medium italic leading-relaxed">"{review.text}"</p>
+                <p className="text-white/80 text-sm sm:text-base font-medium italic leading-relaxed">"{review.text}"</p>
                 <div className="pt-4 border-t border-[#ffffff1a] flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00E5FF] to-[#C0152A] flex items-center justify-center text-xs font-bold text-white shadow-inner">
                     {review.author.charAt(0).toUpperCase()}

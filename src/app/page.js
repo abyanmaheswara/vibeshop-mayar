@@ -38,18 +38,18 @@ export default function Home() {
       <GlassNavbar />
 
       {/* Hero Section */}
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 relative overflow-hidden">
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-20 relative overflow-hidden">
         {/* Animated Background Orbs - Toned Down for comfort */}
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#00e5ff0a] blur-[150px] rounded-full" />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#c0152a0a] blur-[150px] rounded-full" />
+        <div className="absolute top-1/4 -left-20 w-48 h-48 sm:w-96 sm:h-96 bg-[#00e5ff0a] blur-[100px] sm:blur-[150px] rounded-full" />
+        <div className="absolute bottom-1/4 -right-20 w-48 h-48 sm:w-96 sm:h-96 bg-[#c0152a0a] blur-[100px] sm:blur-[150px] rounded-full" />
 
-        <div className="z-10 text-center space-y-8 max-w-4xl">
-          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-6xl md:text-8xl font-black italic tracking-tighter">
+        <div className="z-10 text-center space-y-5 sm:space-y-8 max-w-4xl w-full">
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-3xl sm:text-5xl md:text-8xl font-black italic tracking-tighter">
             THE <span className="text-[#00E5FF] neon-glow-cyan">FUTURE</span> OF <br />
             COMMERCE IS <span className="text-[#C0152A] neon-glow-red">VIBES.</span>
           </motion.h1>
 
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="text-[#ffffff80] text-xl font-medium">
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="text-[#ffffff80] text-sm sm:text-lg md:text-xl font-medium px-2">
             Generate a high-conversion digital storefront in 60 seconds with AI.
           </motion.p>
 
@@ -60,19 +60,19 @@ export default function Home() {
       {/* Preview Section */}
       <AnimatePresence>
         {isGenerated && (
-          <section id="preview" className="min-h-screen py-20 px-6" style={{ background: "linear-gradient(to bottom, transparent, #ffffff05)" }}>
+          <section id="preview" className="min-h-screen py-10 sm:py-20 px-3 sm:px-6" style={{ background: "linear-gradient(to bottom, transparent, #ffffff05)" }}>
             <StorefrontPreview data={storeData} customSlug={customSlug} onRegenerate={handleRegenerate} />
           </section>
         )}
       </AnimatePresence>
 
       {/* Footer Vibe */}
-      <footer className="py-12 text-center border-t border-[#ffffff0d] flex flex-col items-center gap-4">
+      <footer className="py-8 sm:py-12 text-center border-t border-[#ffffff0d] flex flex-col items-center gap-3 sm:gap-4 px-4">
         <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
           <img src="/logo.png" alt="Abyan Studio" className="w-6 h-6 rounded-md" />
           <span className="text-xs font-mono tracking-widest uppercase">Built by Abyan Studio</span>
         </div>
-        <p className="text-[#ffffff26] text-[10px] font-mono tracking-[0.3em] uppercase italic">VibeShop AI — 2026 Competition Ready</p>
+        <p className="text-[#ffffff26] text-[10px] font-mono tracking-[0.2em] sm:tracking-[0.3em] uppercase italic">VibeShop AI — 2026 Competition Ready</p>
       </footer>
     </main>
   );

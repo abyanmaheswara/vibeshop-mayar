@@ -64,50 +64,51 @@ export default function ChatInterface({ onGenerate }) {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto px-1 sm:px-0">
       <AnimatePresence mode="wait">
         {!isGenerating ? (
-          <motion.form initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="glass p-2 rounded-3xl flex items-center gap-2 shadow-2xl">
-              <div className="pl-4 text-[#00E5FF]">
-                <Sparkles size={20} />
+          <motion.form initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} onSubmit={handleSubmit} className="flex flex-col gap-3 sm:gap-4">
+            <div className="glass p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl flex items-center gap-1.5 sm:gap-2 shadow-2xl">
+              <div className="pl-3 sm:pl-4 text-[#00E5FF]">
+                <Sparkles size={18} className="sm:w-5 sm:h-5" />
               </div>
               <input
                 type="text"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Describe your shop (e.g. Toko kaos trendy Gen Z)"
-                className="flex-1 bg-transparent border-none outline-none text-white py-3 placeholder:text-white/30"
+                placeholder="Describe your shop..."
+                className="flex-1 bg-transparent border-none outline-none text-white text-sm sm:text-base py-2.5 sm:py-3 placeholder:text-white/30 min-w-0"
               />
-              <NeonButton type="submit" color="cyan" className="!px-4 !py-2 rounded-2xl">
-                <ArrowRight size={20} />
+              <NeonButton type="submit" color="cyan" className="!px-3 sm:!px-4 !py-2 rounded-xl sm:rounded-2xl flex-shrink-0">
+                <ArrowRight size={18} className="sm:w-5 sm:h-5" />
               </NeonButton>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col items-center justify-center gap-3 sm:gap-4">
               {/* Optional Custom Slug */}
-              <div className="flex items-center gap-3 px-4 py-2 glass rounded-2xl border border-[#ffffff0d] w-fit opacity-70 focus-within:opacity-100 transition-opacity">
-                <span className="text-xs font-mono text-[#ffffff66]">vibeshop.vercel.app/preview/</span>
+              <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 glass rounded-xl sm:rounded-2xl border border-[#ffffff0d] w-full sm:w-fit opacity-70 focus-within:opacity-100 transition-opacity">
+                <span className="text-[10px] sm:text-xs font-mono text-[#ffffff66] whitespace-nowrap hidden sm:inline">vibeshop.vercel.app/preview/</span>
+                <span className="text-[10px] font-mono text-[#ffffff66] whitespace-nowrap sm:hidden">URL:</span>
                 <input
                   type="text"
                   value={customSlug}
                   onChange={(e) => setCustomSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
                   placeholder="custom-url (optional)"
                   maxLength={30}
-                  className="bg-transparent border-none outline-none text-xs font-mono text-[#00E5FF] placeholder:text-[#ffffff30] w-36"
+                  className="bg-transparent border-none outline-none text-xs font-mono text-[#00E5FF] placeholder:text-[#ffffff30] flex-1 sm:w-36 min-w-0"
                 />
               </div>
             </div>
           </motion.form>
         ) : (
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass p-8 rounded-3xl text-center space-y-6 shadow-[0_0_50px_rgba(0,229,255,0.1)]">
-            <div className="relative w-20 h-20 mx-auto">
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass p-5 sm:p-8 rounded-2xl sm:rounded-3xl text-center space-y-4 sm:space-y-6 shadow-[0_0_50px_rgba(0,229,255,0.1)]">
+            <div className="relative w-14 h-14 sm:w-20 sm:h-20 mx-auto">
               <Loader2 className="w-full h-full text-[#00E5FF] animate-spin-slow" />
-              <div className="absolute inset-0 flex items-center justify-center font-bold text-sm">{progress}%</div>
+              <div className="absolute inset-0 flex items-center justify-center font-bold text-xs sm:text-sm">{progress}%</div>
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-xl font-bold neon-glow-cyan italic tracking-wider animate-pulse">{status}</h3>
+              <h3 className="text-base sm:text-xl font-bold neon-glow-cyan italic tracking-wider animate-pulse">{status}</h3>
               <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden border border-white/10">
                 <motion.div className="h-full bg-gradient-to-r from-[#00E5FF] to-[#C0152A]" initial={{ width: 0 }} animate={{ width: `${progress}%` }} />
               </div>
